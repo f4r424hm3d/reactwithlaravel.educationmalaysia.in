@@ -1,0 +1,533 @@
+<?php
+  use App\Models\StudentApplication;
+  use App\Helpers\UniversityProgramListButton;
+?>
+
+<?php $__env->startPush('seo_meta_tag'); ?>
+  <?php echo $__env->make('front.layouts.dynamic_page_meta_tag', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<?php $__env->stopPush(); ?>
+<?php $__env->startPush('breadcrumb_schema'); ?>
+  <!-- breadcrumb schema Code -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org/",
+      "@type": "BreadcrumbList",
+      "name": "<?php echo e(ucwords($meta_title)); ?>",
+      "description": "<?php echo e($meta_description); ?>",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "<?php echo e(url('/')); ?>"
+      }, {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "University",
+        "item": "<?php echo e(route('university.overview',['university_slug'=>$university->uname])); ?>"
+      }, {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "University Courses",
+        "item": "<?php echo e(url()->current()); ?>"
+      }]
+    }
+  </script>
+  <!-- breadcrumb schema Code End -->
+<?php $__env->stopPush(); ?>
+<?php $__env->startPush('pagination_tag'); ?>
+  <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($npu): ?>
+    <link rel="next" href="<?php echo e($npu); ?>" />
+  <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+  <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($ppu): ?>
+    <link rel="prev" href="<?php echo e($ppu); ?>" />
+  <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+<?php $__env->stopPush(); ?>
+<?php $__env->startSection('main-section'); ?>
+  <!-- Top header-->
+  <?php echo $__env->make('front.university-profile', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+  <!-- Breadcrumb -->
+  <!-- Menu -->
+  <?php echo $__env->make('front.university-profile-menu', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+  <!-- Menu -->
+  <section class="bg-light pt-4 pb-4">
+    <div class="container">
+      <div class="row">
+        <!-- Desktop Filter -->
+        <div class="col-lg-3 col-md-12 col-sm-12 co-l2">
+          <?php echo $__env->make('front.filter-university-profile-course-list', ['type' => 'W'], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        </div>
+        <!-- Desktop Filter -->
+        <div class="col-lg-9 col-md-12 col-sm-12 col-12">
+          <div class="dn db-991 mt30 mb0 show-23 mb-3">
+            <div id="main2"><a href="javascript:void(0)" class="btn btn-theme filter_open" onClick="openNav()"
+                id="open2">Show Filter<span class="ml-2"><i class="fa fa-angle-right"></i></span></a></div>
+          </div>
+          <!-- all universities -->
+          <div class="filter-block">
+            <div class="theme-div">
+
+              <div class="programe">
+                <span class="theme-cl"><?php echo e($total); ?> </span>
+                <h2>
+                  Programme offered by
+                </h2>
+                <span class="theme-cl"><?php echo e($university->name); ?></span>
+
+              </div>
+
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2 setbxs">
+              <h4 class="selections mb-0">Showing courses based on your selection</h4>
+              <div class="portal-filter">
+                <div class="heading m-0">Filters Applied</div>
+                <ul>
+                  <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session()->has('UCF_level')): ?>
+                    <li><a onclick="removeFilter('UCF_level')" href="javascript:void(0)"><?php echo e($filter_level); ?><span
+                          class="cross">×</span></a></li>
+                  <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                  <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session()->has('UCF_course_category')): ?>
+                    <li><a onclick="removeFilter('UCF_course_category')"
+                        href="javascript:void(0)"><?php echo e($filter_category->name); ?><span class="cross">×</span></a>
+                    </li>
+                  <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                  <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session()->has('UCF_specialization')): ?>
+                    <li><a onclick="removeFilter('UCF_specialization')"
+                        href="javascript:void(0)"><?php echo e($filter_specialization->name); ?><span class="cross">×</span></a></li>
+                  <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                  <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session()->has('UCF_study_mode')): ?>
+                    <li><a onclick="removeFilter('UCF_study_mode')"
+                        href="javascript:void(0)"><?php echo e(session()->get('UCF_study_mode')); ?><span class="cross">×</span></a>
+                    </li>
+                  <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </ul>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session()->has('UCF_level') ||
+                        session()->has('UCF_course_category') ||
+                        session()->has('UCF_specialization') ||
+                        session()->has('UCF_study_mode')): ?>
+                  <a onclick="removeAllFilter()" href="javascript:void(0)" class="clearAll">Clear All</a>
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="dashboard_container">
+            <div class="dashboard_container_body">
+              <div class="row">
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                  <?php
+                    $study_modes = $row->study_mode != null ? json_decode($row->study_mode) : '';
+                    $study_modes = $study_modes != null ? implode(', ', $study_modes) : '';
+                    $exams = $row->exam_accepted != null ? json_decode($row->exam_accepted) : '';
+                    $exams = $exams != null ? implode(', ', $exams) : '';
+                    if (session()->has('studentLoggedIn')) {
+                        $where = ['prog_id' => $row->id, 'stdid' => session()->get('student_id')];
+                        $check = StudentApplication::where($where)->first();
+                    }
+                  ?>
+
+                  <div class="col-12 col-sm-6 col-md-6 col-lg-6 mb-4">
+                    <!-- Single University -->
+                    <div class="dashboard_single_course">
+                      <div class="dashboard_single_course_caption pl-0 mt-0">
+
+                        <div class="dashboard_single_course_head">
+                          <div class="dashboard_single_course_head_flex">
+                            <h4 class="dashboard_course_title"><?php echo e($row->course_name); ?></h4>
+                          </div>
+                        </div>
+                        <div class="university-maalysia">
+                          <div class="row align-items-center">
+                            <div class="col-12 col-sm-12 mb-3">
+                              <div>
+                                <div class="list-universits"><span class="theme-cl"><i class="fa fa-book mr-2"
+                                      aria-hidden="true"></i>
+                                    Study
+                                    Mode:</span> <span
+                                    class="theme-rl"><?php echo e($row->study_mode != '' ? $row->study_mode : 'N/A'); ?></span> </div>
+                                <div class="list-universits"><span class="theme-cl"><i class="fa fa-calendar mr-2"
+                                      aria-hidden="true"></i>
+                                    App
+                                    deadline:</span> <span
+                                    class="theme-rl"><?php echo e($row->application_deadline != '' ? $row->application_deadline : 'N/A'); ?></span>
+                                </div>
+                                <div class="list-universits"><span class="theme-cl"><i class="fa fa-file-text mr-2"
+                                      aria-hidden="true"></i>
+                                    Intakes:</span>
+                                  <span class="theme-rl"><?php echo e($row->intake != '' ? $row->intake : 'N/A'); ?></span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-12 col-sm-12">
+                              <div class="d-flex set-ggap justify-content-end courss-added">
+                                <a href="<?php echo e(route('university.course.details', ['university_slug' => $university->slug, 'course_slug' => $row->slug])); ?>"
+                                  class="card-btn2">
+                                  View Details
+                                </a>
+                                <?php echo UniversityProgramListButton::getApplyButton($row->id); ?>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+
+              </div>
+              <?php echo $rows->links('pagination::bootstrap-4'); ?>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Content -->
+  <!-- Mobile Filter -->
+  <div id="filter-sidebar" class="filter-sidebar">
+    <div class="filt-head">
+      <h4 class="filt-first">Filter</h4>
+      <a href="javascript:void(0)" class="closebtn" onClick="closeNav()">Close <i class="ti-close ml-1"></i></a>
+    </div>
+    <div class="show-hide-sidebar">
+      <div class="sidebar-widgets">
+
+        <div id="accordionExample" class="accordion shadow circullum full-width">
+          <div class="card mb-2">
+            <div id="headingFive2" class="card-header bg-white shadow-sm border-0 pt-2 pb-2 pl-4 pr-4">
+              <h6 class="mb-0 accordion_title size-xs"><a href="#" data-toggle="collapse"
+                  data-target="#collapseFive2" aria-expanded="true" aria-controls="collapseFive2"
+                  class="d-block position-relative text-dark collapsible-link py-2">Study Level</a></h6>
+            </div>
+            <div id="collapseFive2" aria-labelledby="headingFive2" data-parent="#accordionExample" class="collapse show">
+              <div class="scrlbar">
+                <div class="card-body pl-4 pr-4 pb-2">
+                  <ul class="no-ul-list mb-3">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $levels; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                      <li>
+                        <input id="level<?php echo e($row->level); ?>" class="checkbox-custom" name="institute_type"
+                          type="checkbox"
+                          onclick="<?php echo e(session()->get('UCF_level') == $row->level ? 'removeFilter(`UCF_level`)' : 'ApplyLevelFilter(`' . $row->level . '`)'); ?>"
+                          <?php echo e(session()->get('UCF_level') == $row->level ? 'checked' : ''); ?>>
+                        <label for="level<?php echo e($row->level); ?>"
+                          class="checkbox-custom-label"><?php echo e($row->level); ?></label>
+                      </li>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div id="headingSix" class="card-header bg-white shadow-sm border-0 pt-2 pb-2 pl-4 pr-4">
+              <h6 class="mb-0 accordion_title size-xs"><a href="#" data-toggle="collapse"
+                  data-target="#collapseSix" aria-expanded="true" aria-controls="collapseSix"
+                  class="d-block position-relative text-dark collapsible-link py-2">Course Category</a></h6>
+            </div>
+            <div id="collapseSix" aria-labelledby="headingSix" data-parent="#accordionExample" class="collapse show">
+              <div class="scrlbar">
+                <div class="card-body pl-4 pr-4 pb-2">
+                  <ul class="no-ul-list mb-3">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                      <li>
+                        <input id="category<?php echo e($row->category->id); ?>" class="checkbox-custom" name="institute_type"
+                          type="checkbox"
+                          onclick="<?php echo e(session()->get('UCF_course_category') == $row->category->id ? 'removeFilter(`UCF_course_category`)' : 'ApplyCategoryFilter(`' . $row->category->id . '`)'); ?>"
+                          <?php echo e(session()->get('UCF_course_category') == $row->category->id ? 'checked' : ''); ?>>
+                        <label for="category<?php echo e($row->category->id); ?>"
+                          class="checkbox-custom-label"><?php echo e($row->category->name); ?></label>
+                      </li>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div id="headingSeven" class="card-header bg-white shadow-sm border-0 pt-2 pb-2 pl-4 pr-4">
+              <h6 class="mb-0 accordion_title size-xs"><a href="#" data-toggle="collapse"
+                  data-target="#collapseSeven" aria-expanded="true" aria-controls="collapseSeven"
+                  class="d-block position-relative text-dark collapsible-link py-2">Stream</a></h6>
+            </div>
+            <div id="collapseSeven" aria-labelledby="headingSeven" data-parent="#accordionExample"
+              class="collapse show">
+              <div class="scrlbar">
+                <div class="card-body pl-4 pr-4 pb-2">
+                  <ul class="no-ul-list mb-3">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $specializations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                      <li>
+                        <input id="spc<?php echo e($row->getSpecialization->id); ?>" class="checkbox-custom" name="institute_type"
+                          type="checkbox" onclick="<?php echo session()->get('UCF_specialization') == $row->getSpecialization->id ? "removeFilter('UCF_specialization')" : "ApplySpecializationFilter('" . $row->getSpecialization->id . "')";
+                          ?>"
+                          <?php echo e(session()->get('UCF_specialization') == $row->getSpecialization->id ? 'checked' : ''); ?>>
+                        <label for="spc<?php echo e($row->getSpecialization->id); ?>"
+                          class="checkbox-custom-label"><?php echo e($row->getSpecialization->name); ?></label>
+                      </li>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2 hide-this">
+            <div id="headingEight" class="card-header bg-white shadow-sm border-0 pt-2 pb-2 pl-4 pr-4">
+              <h6 class="mb-0 accordion_title size-xs"><a href="#" data-toggle="collapse"
+                  data-target="#collapseEight" aria-expanded="true" aria-controls="collapseEight"
+                  class="d-block position-relative text-dark collapsible-link py-2">Intakes</a></h6>
+            </div>
+            <div id="collapseEight" aria-labelledby="headingEight" data-parent="#accordionExample"
+              class="collapse show">
+              <div class="scrlbar">
+                <div class="card-body pl-4 pr-4 pb-2">
+                  <ul class="no-ul-list mb-3">
+                    <li>
+                      <input id="23" class="checkbox-custom" name="23" type="checkbox">
+                      <label for="23" class="checkbox-custom-label">January</label>
+                    </li>
+                    <li>
+                      <input id="24" class="checkbox-custom" name="24" type="checkbox">
+                      <label for="24" class="checkbox-custom-label">Feburary</label>
+                    </li>
+                    <li>
+                      <input id="25" class="checkbox-custom" name="25" type="checkbox">
+                      <label for="25" class="checkbox-custom-label">March</label>
+                    </li>
+                    <li>
+                      <input id="26" class="checkbox-custom" name="26" type="checkbox">
+                      <label for="26" class="checkbox-custom-label">April</label>
+                    </li>
+                    <li>
+                      <input id="27" class="checkbox-custom" name="27" type="checkbox">
+                      <label for="27" class="checkbox-custom-label">May</label>
+                    </li>
+                    <li>
+                      <input id="28" class="checkbox-custom" name="28" type="checkbox">
+                      <label for="28" class="checkbox-custom-label">June</label>
+                    </li>
+                    <li>
+                      <input id="29" class="checkbox-custom" name="29" type="checkbox">
+                      <label for="29" class="checkbox-custom-label">July</label>
+                    </li>
+                    <li>
+                      <input id="30" class="checkbox-custom" name="30" type="checkbox">
+                      <label for="30" class="checkbox-custom-label">August</label>
+                    </li>
+                    <li>
+                      <input id="31" class="checkbox-custom" name="31" type="checkbox">
+                      <label for="31" class="checkbox-custom-label">September</label>
+                    </li>
+                    <li>
+                      <input id="32" class="checkbox-custom" name="32" type="checkbox">
+                      <label for="32" class="checkbox-custom-label">October</label>
+                    </li>
+                    <li>
+                      <input id="33" class="checkbox-custom" name="33" type="checkbox">
+                      <label for="33" class="checkbox-custom-label">November</label>
+                    </li>
+                    <li>
+                      <input id="34" class="checkbox-custom" name="34" type="checkbox">
+                      <label for="34" class="checkbox-custom-label">December</label>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div id="headingNine" class="card-header bg-white shadow-sm border-0 pt-2 pb-2 pl-4 pr-4">
+              <h6 class="mb-0 accordion_title size-xs"><a href="#" data-toggle="collapse"
+                  data-target="#collapseNine" aria-expanded="true" aria-controls="collapseNine"
+                  class="d-block position-relative text-dark collapsible-link py-2">Study Mode</a></h6>
+            </div>
+            <div id="collapseNine" aria-labelledby="headingNine" data-parent="#accordionExample"
+              class="collapse show">
+              <div class="scrlbar">
+                <div class="card-body pl-4 pr-4 pb-2">
+                  <ul class="no-ul-list mb-3">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $studyModes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                      <li>
+                        <input id="sm<?php echo e($row->id); ?>" class="checkbox-custom" name="institute_type"
+                          type="checkbox" onclick="<?php echo session()->get('UCF_study_mode') == $row->study_mode ? " removeFilter('UCF_study_mode')" : "ApplyFilter('UCF_study_mode','" . $row->study_mode . "')"; ?>"
+                          <?php echo e(session()->get('UCF_study_mode') == $row->study_mode ? 'checked' : ''); ?>>
+                        <label for="sm<?php echo e($row->id); ?>"
+                          class="checkbox-custom-label"><?php echo e($row->study_mode); ?></label>
+                      </li>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Show more -->
+  <script>
+    $(".show-more").click(function() {
+      if ($(".text").hasClass("show-more-height")) {
+        $(this).text("(Show Less)");
+      } else {
+        $(this).text("(Show More)");
+      }
+      $(".text").toggleClass("show-more-height");
+    });
+  </script>
+  <script>
+    function openNav() {
+      document.getElementById("filter-sidebar").style.width = "320px";
+    }
+
+    function closeNav() {
+      document.getElementById("filter-sidebar").style.width = "0";
+    }
+  </script>
+  <script>
+    function ApplyNow() {
+      //$('#errmsg').show();
+      window.open("<?php echo e(url('sign-up?return_to=' . request()->path())); ?>", "_self");
+    }
+
+    function ApplyLevelFilter(val) {
+      //alert(val);
+      $.ajax({
+        url: "<?php echo e(url('university-course-list/level')); ?>",
+        method: "GET",
+        data: {
+          level: val
+        },
+        success: function(result) {
+          //alert(result);
+          location.reload(true);
+          //window.open("<?php echo e(url('university/' . $university->slug)); ?>" + "/" + result, '_SELF');
+        }
+      })
+    }
+
+    function ApplyCategoryFilter(val) {
+      //alert(val);
+      $.ajax({
+        url: "<?php echo e(url('university-course-list/category')); ?>",
+        method: "GET",
+        data: {
+          course_category_id: val
+        },
+        success: function(result) {
+          //alert(result);
+          location.reload(true);
+          //window.open("<?php echo e(url($university->slug . '/')); ?>" + "/" + result, '_SELF');
+        }
+      })
+    }
+
+    function ApplySpecializationFilter(val) {
+      //alert(val);
+      $.ajax({
+        url: "<?php echo e(url('university-course-list/specialization')); ?>",
+        method: "GET",
+        data: {
+          specialization_id: val
+        },
+        success: function(result) {
+          //alert(result);
+          location.reload(true);
+          //window.open("<?php echo e(url($university->slug . '/')); ?>" + "/" + result, '_SELF');
+        }
+      })
+    }
+
+    function ApplyFilter(col, val) {
+      //alert(`${col} , ${val}`);
+      $.ajax({
+        url: "<?php echo e(url('university-course-list/apply-filter')); ?>",
+        method: "GET",
+        data: {
+          col: col,
+          val: val,
+        },
+        success: function(result) {
+          //alert(result);
+          //window.open("<?php echo e(url($university->slug . '/')); ?>"+ "/courses", '_SELF');
+          location.reload(true);
+        }
+      })
+    }
+
+
+    function removeFilter(a) {
+      //alert(a);
+      if (a != "") {
+        $.ajax({
+          url: "<?php echo e(url('university-course-list/remove-filter')); ?>",
+          method: "GET",
+          data: {
+            value: a
+          },
+          success: function(b) {
+            window.open("<?php echo e(url('university/' . $university->slug . '/courses/')); ?>", '_SELF');
+          }
+        })
+      }
+    }
+
+    function removeAllFilter() {
+      $.ajax({
+        url: "<?php echo e(url('university-course-list/remove-all-filter')); ?>",
+        method: "GET",
+        success: function(b) {
+          window.open("<?php echo e(url('university/' . $university->slug . '/courses/')); ?>", '_SELF');
+        }
+      })
+    }
+
+    function applyProgram(program_id, btn_id) {
+      //alert(id);
+      return new Promise(function(resolve, reject) {
+        $("#" + btn_id).text('Applying...');
+        $.ajax({
+          url: "<?php echo e(url('/student/apply-program')); ?>",
+          method: "GET",
+          data: {
+            program_id: program_id,
+          },
+          success: function(data) {
+            //alert(data);
+            $("#" + btn_id).attr('class', 'btn btn-success');
+            $("#" + btn_id).text('Applied');
+          }
+        }).fail(err => {
+          $("#" + btn_id).attr('class', 'btn btn-danger');
+          $("#" + btn_id).text('Failed');
+        });
+      });
+    }
+
+    function shortlistProgram(program_id) {
+      //alert(id);
+      return new Promise(function(resolve, reject) {
+        //$("#" + btn_id).text('Applying...');
+        $.ajax({
+          url: "<?php echo e(url('/student/shortlist-program')); ?>",
+          method: "GET",
+          data: {
+            program_id: program_id,
+          },
+          success: function(data) {
+            //alert(data);
+            $("#shortlisted_mark" + program_id).show();
+            $("#add_to_shortlist_mark" + program_id).hide();
+          }
+        }).fail(err => {
+          // $("#" + btn_id).attr('class', 'btn btn-danger');
+          // $("#" + btn_id).text('Failed');
+        });
+      });
+    }
+  </script>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('front.layouts.main', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\reactwithlaravel.educationmalaysia.in\resources\views\front\university-course-list.blade.php ENDPATH**/ ?>

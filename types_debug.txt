@@ -1,0 +1,15 @@
+ID: 1
+Type: Public Institution
+Slug: public-institution
+SEO Slug: public-institution
+-------------------
+ID: 2
+Type: Private Institution
+Slug: private-institution
+SEO Slug: private-institution
+-------------------
+ID: 3
+Type: Foreign University
+Slug: foreign-university
+SEO Slug: foreign-universities
+-------------------
