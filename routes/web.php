@@ -51,4 +51,4 @@ Route::get('/migrate', function () {
 //
 // Excluded paths: /api/*, /admin/*, /storage/*, sitemap*.xml
 // ============================================================================
-Route::get('/{any}', [ReactAppController::class, 'index'])->where('any', '^(?!api|admin|storage|sitemap).*$');
+Route::get('/{any}', [ReactAppController::class, 'index'])->where('any', '^(?!api|admin|storage).*$');
