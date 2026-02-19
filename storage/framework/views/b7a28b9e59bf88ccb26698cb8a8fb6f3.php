@@ -51,4 +51,4 @@
     <priority>1</priority>
   </url>
 </urlset>
-<?php /**PATH C:\laragon\www\reactwithlaravel.educationmalaysia.in\resources\views\sm\home.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\laragon\www\reactwithlaravel.educationmalaysia.in\resources\views/sm/home.blade.php ENDPATH**/ ?>

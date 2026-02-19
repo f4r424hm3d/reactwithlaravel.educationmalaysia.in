@@ -37,4 +37,4 @@
     <loc><?php echo e(sitemap_url('sitemap-courses-in-malaysia.xml')); ?></loc>
   </sitemap>
 </sitemapindex>
-<?php /**PATH C:\laragon\www\reactwithlaravel.educationmalaysia.in\resources\views\sm\sitemap.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\laragon\www\reactwithlaravel.educationmalaysia.in\resources\views/sm/sitemap.blade.php ENDPATH**/ ?>
