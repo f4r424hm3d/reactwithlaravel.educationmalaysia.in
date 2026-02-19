@@ -1,51 +1,136 @@
-name: Deploy Laravel + React to cPanel
+name: Deploy Laravel + React (Education Malaysia)
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      # 1️⃣ Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Setup SSH
+      # 2️⃣ Setup PHP
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, bcmath, intl, pdo, pdo_mysql, xml, curl, zip, gd
+          tools: composer
+
+      # 3️⃣ Setup Node
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # 4️⃣ Install NPM deps
+      - name: Install NPM dependencies
+        run: npm install --force
+
+      # 5️⃣ Create temporary .env for CI build
+      - name: Create temporary .env for CI
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+          cp .env.example .env
+          sed -i 's|APP_URL=.*|APP_URL=http://localhost|' .env
+          mkdir -p storage/framework/cache
+          mkdir -p storage/framework/sessions
+          mkdir -p storage/framework/views
+          mkdir -p storage/logs
+          mkdir -p bootstrap/cache
 
-      - name: Deploy to Server
+      # 6️⃣ Install Composer deps
+      - name: Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      # 7️⃣ Generate app key for CI
+      - name: Generate Laravel App Key
+        run: php artisan key:generate
+
+      # 8️⃣ Build React/Vite assets
+      - name: Build Frontend Assets (Vite)
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
+          VITE_SITE_URL: ${{ secrets.VITE_SITE_URL }}
+          VITE_ADMIN_URL: ${{ secrets.VITE_ADMIN_URL }}
+          VITE_IMAGE_BASE_URL: ${{ secrets.VITE_IMAGE_BASE_URL }}
         run: |
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd ${{ secrets.DEPLOY_PATH }}
+          echo "VITE_API_BASE_URL=${VITE_API_BASE_URL}" >> .env
+          echo "VITE_API_KEY=${VITE_API_KEY}" >> .env
+          echo "VITE_SITE_URL=${VITE_SITE_URL}" >> .env
+          echo "VITE_ADMIN_URL=${VITE_ADMIN_URL}" >> .env
+          echo "VITE_IMAGE_BASE_URL=${VITE_IMAGE_BASE_URL}" >> .env
+          npx vite build
+          cp public/build/.vite/manifest.json public/build/manifest.json 2>/dev/null || true
 
-            echo "📥 Pulling latest code..."
-            git reset --hard
-            git pull origin main
+      # 9️⃣ Create deploy zip
+      - name: Create deployment archive
+        run: |
+          zip -r deploy.zip . \
+            --exclude="*.git*" \
+            --exclude="node_modules/*" \
+            --exclude=".env" \
+            --exclude="deploy.zip" \
+            --exclude="tests/*" \
+            --exclude="*.md"
 
-            echo "📦 Installing Composer deps..."
-            composer install --no-dev --optimize-autoloader
+      # 🔟 Upload zip to cPanel
+      - name: Upload archive via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "deploy.zip"
+          target: "/home/gdfgrdlsw/test.educationmalaysia.in/"
+          overwrite: true
 
-            echo "⚙️ Laravel optimize..."
+      # 1️⃣1️⃣ Run Laravel commands on server
+      - name: Run Laravel commands on server
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd "/home/gdfgrdlsw/test.educationmalaysia.in/"
+
+            unzip -o deploy.zip -d .
+            rm -f deploy.zip
+
+            php artisan key:generate --force
+
+            mkdir -p bootstrap/cache
+            mkdir -p storage/framework/cache
+            mkdir -p storage/framework/sessions
+            mkdir -p storage/framework/views
+            mkdir -p storage/logs
+            mkdir -p storage/app/public
+            chmod -R 775 storage bootstrap/cache
+
+            php artisan migrate --force
+
+            rm -rf public/storage
+            php artisan storage:link --force
+
             php artisan config:clear
             php artisan cache:clear
             php artisan route:clear
             php artisan view:clear
-            php artisan migrate --force
 
-            echo "📦 Installing Node deps..."
-            npm install
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
 
-            echo "🏗 Building React..."
-            npm run build
-
-            echo "🔐 Fix permissions..."
-            chmod -R 755 storage bootstrap/cache
-
-            echo "✅ DEPLOY DONE"
-          EOF
+            echo "🚀 Deployment complete!"
