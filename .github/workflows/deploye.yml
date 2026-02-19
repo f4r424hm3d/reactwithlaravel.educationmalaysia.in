@@ -92,7 +92,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: "deploy.zip"
-          target: "/home/gdfgrdlsw/test.educationmalaysia.in/"
+          target: ${{ secrets.DEPLOY_PATH }}
           overwrite: true
 
       # 1️⃣1️⃣ Run Laravel commands on server
@@ -104,7 +104,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd "/home/gdfgrdlsw/test.educationmalaysia.in/"
+            cd ${{ secrets.DEPLOY_PATH }}
 
             unzip -o deploy.zip -d .
             rm -f deploy.zip
